@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_conv_ls_darwin_bonus.c                          :+:      :+:    :+:   */
+/*   ft_conv_ls_darwin.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stanaka2 < stanaka2@student.42tokyo.jp>    +#+  +:+       +#+        */
+/*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 13:20:47 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/06/30 14:32:54 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/09/08 18:05:10 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static void	ft_print_null(t_dprintf_ctx *ctx)
 		ft_print_space_width(ctx, len);
 	if (ctx->width_flags == '0')
 		ft_print_zero_width(ctx, len);
-	ft_fprint_strn(ctx, s, len);
+	ft_dprint_strn(ctx, s, len);
 	if (ctx->width_flags == '-')
 		ft_print_space_width(ctx, len);
 }

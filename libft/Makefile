@@ -6,7 +6,7 @@
 #    By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/24 21:27:03 by stanaka2          #+#    #+#              #
-#    Updated: 2025/08/20 20:19:42 by stanaka2         ###   ########.fr        #
+#    Updated: 2025/09/08 18:29:06 by stanaka2         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,7 +42,7 @@ SRCS += ${addprefix ${SRCDIR}/lst/, \
 			ft_lstiter.c ft_lstlast.c ft_lstmap.c ft_lstnew.c ft_lstsize.c \
 		}
 SRCS += ${addprefix ${SRCDIR}/math/, \
-			ft_fabs.c ft_round.c ft_sqrt.c \
+			ft_fabs.c ft_round.c ft_sqrt.c ft_square.c \
 		}
 
 # get_next_line

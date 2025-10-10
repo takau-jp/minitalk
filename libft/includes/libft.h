@@ -6,7 +6,7 @@
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 21:58:34 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/08/20 20:20:41 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/09/03 19:49:42 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stdlib.h>
 # include <stdint.h>
 # include <stddef.h>
+# include <math.h>
 
 # include "ft_dprintf.h"
 # include "get_next_line.h"
@@ -111,6 +112,7 @@ int				ft_lstsize(t_list *lst);
 double			ft_fabs(double x);
 double			ft_round(double x);
 double			ft_sqrt(double x);
+double			ft_square(double x);
 ssize_t			ft_putchar_fd_bytes(char c, int fd);
 ssize_t			ft_putendl_fd_bytes(char *s, int fd);
 ssize_t			ft_putnbr_fd_bytes(int n, int fd);
