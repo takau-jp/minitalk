@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: stanaka2 < stanaka2@student.42tokyo.jp>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 19:43:58 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/09/08 16:10:17 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/10/13 21:50:20 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,23 +55,21 @@ void	receiver(int sig, siginfo_t *info, void *ucontext)
 	if (g_client_pid == INITIAL)
 		init_for_new_client(&bit_count, &buf_len, info->si_pid);
 	else if (g_client_pid != info->si_pid)
+	{
+		kill(info->si_pid, SIGUSR2);
 		return ;
+	}
 	byte = (byte << 1) | receive_bit(sig);
 	bit_count++;
 	if (bit_count == 8)
 	{
 		process_byte(byte, &buf_len);
 		bit_count = 0;
-		if (byte == '\0')
-		{
-			if (kill(g_client_pid, SIGUSR1) == -1)
-				client_connection_error();
-			g_client_pid = INITIAL;
-			return ;
-		}
 	}
 	if (kill(g_client_pid, SIGUSR1) == -1)
 		client_connection_error();
+	if (bit_count == 0 && byte == '\0')
+		g_client_pid = INITIAL;
 }
 
 void	init_for_new_client(uint8_t *bit_count, size_t *buf_len, pid_t pid)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: stanaka2 < stanaka2@student.42tokyo.jp>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 19:44:01 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/09/08 16:10:03 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/10/13 21:34:01 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ int	main(int argc, char **argv)
 	pid_t				pid;
 	struct sigaction	ack_sa;
 	struct sigaction	nak_sa;
-	unsigned char		*text;
 
 	if (argc != 3)
 		exit(1);
@@ -41,9 +40,9 @@ int	main(int argc, char **argv)
 	nak_sa.sa_flags = SA_SIGINFO;
 	nak_sa.sa_sigaction = nak_handler;
 	sigaction(SIGUSR2, &nak_sa, NULL);
-	text = utf8_validation_and_replacement(argv[2]);
-	sender(pid, (unsigned char *)text);
-	free(text);
+	if (!utf8_validation(argv[2]))
+		ft_putendl_fd("[WARNING!!]Invalid UTF-8 byte sequence detected.", 2);
+	sender(pid, (unsigned char *)argv[2]);
 }
 
 void	sender(pid_t pid, unsigned char *text)

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+         #
+#    By: stanaka2 < stanaka2@student.42tokyo.jp>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/13 19:52:15 by stanaka2          #+#    #+#              #
-#    Updated: 2025/09/08 16:06:46 by stanaka2         ###   ########.fr        #
+#    Updated: 2025/10/14 07:35:34 by stanaka2         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,15 +45,17 @@ SERVER_SRCS += ${addprefix ${SERVER_SRCDIR}/, \
 B_CLIENT_SRCDIR = bonus/client
 B_SERVER_SRCDIR = bonus/server
 B_UTF8_SRCDIR = bonus/utf8
-B_UTF8_SRCS = ${addprefix ${B_UTF8_SRCDIR}/, utf8_validate_and_append_byte_bonus.c \
+B_UTF8_SRCS = ${addprefix ${B_UTF8_SRCDIR}/, append_utf8_byte_sequence_bonus.c \
+				utf8_byte_validation_bonus.c \
+				utf8_codepoint_validation_bonus.c \
 				utf8_utils_bonus.c \
-				check_utf8_code_point_bonus.c \
+				validate_utf8_byte_sequence_bonus.c \
 			}
 B_CLIENT_SRCS = ${addprefix ${B_CLIENT_SRCDIR}/, client_bonus.c}
 B_CLIENT_SRCS += ${addprefix ${B_CLIENT_SRCDIR}/, \
 				check_pid_bonus.c \
 				errors_bonus.c \
-				utf8_validation_and_replacement_bonus.c \
+				utf8_validation_bonus.c \
 			}
 B_CLIENT_SRCS += ${B_UTF8_SRCS}
 B_SERVER_SRCS = ${addprefix ${B_SERVER_SRCDIR}/, server_bonus.c}

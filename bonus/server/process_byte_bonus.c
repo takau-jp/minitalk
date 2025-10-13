@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_byte_bonus.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: stanaka2 < stanaka2@student.42tokyo.jp>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 13:10:05 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/08/28 01:34:39 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/10/14 07:35:19 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 void	process_byte(unsigned char byte, size_t *buf_len)
 {
-	static unsigned char	buf[1024];
+	static unsigned char	buf[BUF_SIZE];
 	bool					buf_appended;
 
-	buf_appended = utf8_validate_and_append_byte(buf, buf_len, byte);
+	buf_appended = append_utf8_byte_sequence(buf, buf_len, byte);
 	if (buf_appended == true)
 	{
 		if (byte == '\0')
@@ -29,7 +29,7 @@ void	process_byte(unsigned char byte, size_t *buf_len)
 		}
 		else
 		{
-			if (*buf_len >= 1020)
+			if (*buf_len >= BUF_CAPACITY)
 			{
 				buf[*buf_len] = '\0';
 				if (ft_putstr_fd_bytes((char *)buf, 1) == -1)

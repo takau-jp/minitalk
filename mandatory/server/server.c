@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   server.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: stanaka2 < stanaka2@student.42tokyo.jp>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 19:43:58 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/10/02 02:31:20 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/10/13 21:50:49 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
 
 void	receiver(int sig, siginfo_t *info, void *ucontext);
-void	init_for_new_client(uint8_t *bit_count, int *buf_len, pid_t pid);
+void	init_for_new_client(uint8_t *bit_count, size_t *buf_len, pid_t pid);
 void	server_error(void);
 void	client_connection_error(void);
 
@@ -50,32 +50,30 @@ void	receiver(int sig, siginfo_t *info, void *ucontext)
 {
 	static unsigned char	byte;
 	static uint8_t			bit_count;
-	static int				buf_len;
+	static size_t			buf_len;
 
 	(void)ucontext;
 	if (g_client_pid == INITIAL)
 		init_for_new_client(&bit_count, &buf_len, info->si_pid);
 	else if (g_client_pid != info->si_pid)
+	{
+		kill(info->si_pid, SIGUSR2);
 		return ;
+	}
 	byte = (byte << 1) | receive_bit(sig);
 	bit_count++;
 	if (bit_count == 8)
 	{
 		process_byte(byte, &buf_len);
 		bit_count = 0;
-		if (byte == '\0')
-		{
-			if (kill(g_client_pid, SIGUSR1) == -1)
-				client_connection_error();
-			g_client_pid = INITIAL;
-			return ;
-		}
 	}
 	if (kill(g_client_pid, SIGUSR1) == -1)
 		client_connection_error();
+	if (bit_count == 0 && byte == '\0')
+		g_client_pid = INITIAL;
 }
 
-void	init_for_new_client(uint8_t *bit_count, int *buf_len, pid_t pid)
+void	init_for_new_client(uint8_t *bit_count, size_t *buf_len, pid_t pid)
 {
 	*bit_count = 0;
 	*buf_len = 0;

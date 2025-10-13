@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   process_byte.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: stanaka2 < stanaka2@student.42tokyo.jp>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 13:10:05 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/08/24 15:38:13 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/10/13 22:06:06 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
 
-void	process_byte(unsigned char byte, int *buf_len)
+void	process_byte(unsigned char byte, size_t *buf_len)
 {
-	static unsigned char	buf[1024];
+	static unsigned char	buf[BUF_SIZE];
 
 	buf[(*buf_len)++] = byte;
 	if (byte == '\0')
@@ -26,7 +26,7 @@ void	process_byte(unsigned char byte, int *buf_len)
 	}
 	else
 	{
-		if (*buf_len >= 1020)
+		if (*buf_len == BUF_CAPACITY)
 		{
 			buf[*buf_len] = '\0';
 			if (ft_putstr_fd_bytes((char *)buf, 1) == -1)
