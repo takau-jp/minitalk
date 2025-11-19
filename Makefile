@@ -3,142 +3,189 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: stanaka2 < stanaka2@student.42tokyo.jp>    +#+  +:+       +#+         #
+#    By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/13 19:52:15 by stanaka2          #+#    #+#              #
-#    Updated: 2025/10/14 07:35:34 by stanaka2         ###   ########.fr        #
+#    Updated: 2025/11/19 21:18:08 by stanaka2         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+# -------------------------- #
+#      Makefile Setting      #
+# -------------------------- #
+
+MAKEFLAGS += --no-print-directory
+
+# -------------------------- #
+# 　　　　　　Target　　　      #
+# -------------------------- #
 NAME = minitalk
 NAME_1 = client
 NAME_2 = server
-CC = cc
 
-# FLAGS
-CFLAGS = -Wall -Wextra -Werror
-DEPSFLAGS = -MMD
+# -------------------------- #
+# 　　　Compiler Flags        #
+# -------------------------- #
+CFLAGS  = -Wall -Wextra -Werror
 
-# libft
+ifeq ($(filter asan,$(MAKECMDGOALS)),asan)
+CFLAGS += -g -fsanitize=address
+else ifeq ($(filter debug,$(MAKECMDGOALS)),debug)
+CFLAGS += -g
+endif
+
+# -------------------------- #
+# 　　     　LIBFT            #
+# -------------------------- #
 LIBFT_DIR = libft
 LIBFT = ${LIBFT_DIR}/libft.a
-LIBFT_INCLUDE = -I ${LIBFT_DIR}/includes
+LIBFT_INCLUDE = -I ${LIBFT_DIR}/include
 
-# INCLUDE
-INCLUDE = -I includes ${LIBFT_INCLUDE}
+# -------------------------- #
+#    Dependency & Include    #
+# -------------------------- #
+DEPFLAGS = -MMD
+INCLUDE = -I include ${LIBFT_INCLUDE}
 
-# srcs
-CLIENT_SRCDIR = mandatory/client
-SERVER_SRCDIR = mandatory/server
-CLIENT_SRCS = ${addprefix ${CLIENT_SRCDIR}/, client.c}
-CLIENT_SRCS += ${addprefix ${CLIENT_SRCDIR}/, \
-				check_pid.c \
-				errors.c \
-			}
-SERVER_SRCS = ${addprefix ${SERVER_SRCDIR}/, server.c}
-SERVER_SRCS += ${addprefix ${SERVER_SRCDIR}/, \
-				print_server_pid.c \
-				receive_bit.c \
-				process_byte.c \
-			}
+# -------------------------- #
+#     Source Directories     #
+# -------------------------- #
+SRCDIRS = mandatory/client mandatory/server
+SRCDIRS += bonus/client bonus/server bonus/utf8
 
-B_CLIENT_SRCDIR = bonus/client
-B_SERVER_SRCDIR = bonus/server
-B_UTF8_SRCDIR = bonus/utf8
-B_UTF8_SRCS = ${addprefix ${B_UTF8_SRCDIR}/, append_utf8_byte_sequence_bonus.c \
-				utf8_byte_validation_bonus.c \
-				utf8_codepoint_validation_bonus.c \
-				utf8_utils_bonus.c \
-				validate_utf8_byte_sequence_bonus.c \
-			}
-B_CLIENT_SRCS = ${addprefix ${B_CLIENT_SRCDIR}/, client_bonus.c}
-B_CLIENT_SRCS += ${addprefix ${B_CLIENT_SRCDIR}/, \
-				check_pid_bonus.c \
-				errors_bonus.c \
-				utf8_validation_bonus.c \
-			}
-B_CLIENT_SRCS += ${B_UTF8_SRCS}
-B_SERVER_SRCS = ${addprefix ${B_SERVER_SRCDIR}/, server_bonus.c}
-B_SERVER_SRCS += ${addprefix ${B_SERVER_SRCDIR}/, \
-				print_server_pid_bonus.c \
-				receive_bit_bonus.c \
-				process_byte_bonus.c \
-			}
-B_SERVER_SRCS += ${B_UTF8_SRCS}
+# -------------------------- #
+#        Source Files        #
+# -------------------------- #
 
-# objs
-CLIENT_OBJDIR = objs_client
-SERVER_OBJDIR = objs_server
-CLIENT_OBJS = ${addprefix ${CLIENT_OBJDIR}/, ${notdir ${CLIENT_SRCS:.c=.o}}}
-SERVER_OBJS = ${addprefix ${SERVER_OBJDIR}/, ${notdir ${SERVER_SRCS:.c=.o}}}
-
-B_CLIENT_OBJS = ${addprefix ${CLIENT_OBJDIR}/, ${notdir ${B_CLIENT_SRCS:.c=.o}}}
-B_SERVER_OBJS = ${addprefix ${SERVER_OBJDIR}/, ${notdir ${B_SERVER_SRCS:.c=.o}}}
-
-# deps
-CLIENT_DEPS	= ${addprefix ${CLIENT_OBJDIR}/, ${notdir ${CLIENT_SRCS:.c=.d}}}
-SERVER_DEPS	= ${addprefix ${SERVER_OBJDIR}/, ${notdir ${SERVER_SRCS:.c=.d}}}
-
-B_CLIENT_DEPS	= ${addprefix ${CLIENT_OBJDIR}/, ${notdir ${B_CLIENT_SRCS:.c=.d}}}
-B_SERVER_DEPS	= ${addprefix ${SERVER_OBJDIR}/, ${notdir ${B_SERVER_SRCS:.c=.d}}}
+# mandatory
+CLIENT_SRCS =	client.c check_pid.c errors.c
+SERVER_SRCS =	server.c print_server_pid.c receive_bit.c process_byte.c
 
 # bonus
-ifeq ($(MAKECMDGOALS), bonus)
+B_CLIENT_SRCS =	client_bonus.c check_pid_bonus.c errors_bonus.c utf8_validation_bonus.c
+B_SERVER_SRCS =	server_bonus.c print_server_pid_bonus.c receive_bit_bonus.c process_byte_bonus.c
+B_UTF8_SRCS +=	append_utf8_byte_sequence_bonus.c \
+				utf8_byte_validation_bonus.c utf8_codepoint_validation_bonus.c \
+				utf8_utils_bonus.c validate_utf8_byte_sequence_bonus.c
+B_CLIENT_SRCS += $(B_UTF8_SRCS)
+B_SERVER_SRCS += $(B_UTF8_SRCS)
+
+# -------------------------- #
+#    ANSI Escape Sequence    #
+# -------------------------- #
+GREEN  = \033[0;32m
+BLUE   = \033[0;34m
+RED    = \033[0;31m
+YELLOW = \033[0;33m
+NC     = \033[0m
+MOVE_LINE_TOP = \033[1G
+MOVE_ABOVE_LINE_TOP = \033[1F
+CLEAR_LINE = \033[2K
+
+# -------------------------- #
+#        VPATH Setup         #
+# -------------------------- #
+$(foreach dir,$(SRCDIRS), $(eval vpath %.c $(dir)))
+
+# -------------------------- #
+#  Object & Dependency Setup #
+# -------------------------- #
+OBJDIR = objs
+# mandatory
+CLIENT_OBJS   := $(patsubst %.c, $(OBJDIR)/%.o, $(notdir $(CLIENT_SRCS)))
+SERVER_OBJS   := $(patsubst %.c, $(OBJDIR)/%.o, $(notdir $(SERVER_SRCS)))
+CLIENT_DEPS := $(patsubst %.c, $(OBJDIR)/%.d, $(notdir $(CLIENT_SRCS)))
+SERVER_DEPS := $(patsubst %.c, $(OBJDIR)/%.d, $(notdir $(SERVER_SRCS)))
+# bonus
+B_CLIENT_OBJS   := $(patsubst %.c, $(OBJDIR)/%.o, $(notdir $(B_CLIENT_SRCS)))
+B_SERVER_OBJS   := $(patsubst %.c, $(OBJDIR)/%.o, $(notdir $(B_SERVER_SRCS)))
+B_CLIENT_DEPS := $(patsubst %.c, $(OBJDIR)/%.d, $(notdir $(B_CLIENT_SRCS)))
+B_SERVER_EPS := $(patsubst %.c, $(OBJDIR)/%.d, $(notdir $(B_SERVER_SRCS)))
+
+# -------------------------- #
+#       Bonus Switching      #
+# -------------------------- #
+ifeq ($(filter bonus,$(MAKECMDGOALS)),bonus)
 CLIENT_OBJS = ${B_CLIENT_OBJS}
 SERVER_OBJS = ${B_SERVER_OBJS}
 CLIENT_DEPS	= ${B_CLIENT_DEPS}
 SERVER_DEPS	= ${B_SERVER_DEPS}
 endif
 
-all: ${NAME}
+# -------------------------- #
+#        Main Targets        #
+# -------------------------- #
+all: $(NAME)
 
-${NAME}: ${NAME_1} ${NAME_2}
+$(NAME): ${NAME_1} ${NAME_2}
 
 ${NAME_1}: ${CLIENT_OBJS} ${LIBFT}
-	${CC} $^ -o $@
+	@${CC} $(CFLAGS) $^ -o $@  
+	@echo "[MINITALK] $(GREEN)Build Complete:$(NC) $@"
 
 ${NAME_2}: ${SERVER_OBJS} ${LIBFT}
-	${CC} $^ -o $@
+	@${CC} $(CFLAGS) $^ -o $@  
+	@echo "[MINITALK] $(GREEN)Build Complete:$(NC) $@"
 
+# -------------------------- #
+#         LIBFT Rule         #
+# -------------------------- #
 ${LIBFT}:
-	@make -C $(LIBFT_DIR)
+	@echo "[MINITALK] $(YELLOW)Build:$(NC) $@"
+ifeq ($(filter debug,$(MAKECMDGOALS)),debug)
+	@$(MAKE) -C $(LIBFT_DIR) debug
+else ifeq ($(filter asan,$(MAKECMDGOALS)),asan)
+	@$(MAKE) -C $(LIBFT_DIR) asan
+else
+	@$(MAKE) -C $(LIBFT_DIR)
+endif
 
-${CLIENT_OBJDIR}:
-	-mkdir -p ${CLIENT_OBJDIR}
+# -------------------------- #
+#         Bonus Rules        #
+# -------------------------- #
 
-${SERVER_OBJDIR}:
-	-mkdir -p ${SERVER_OBJDIR}
+bonus: $(NAME)
 
-${CLIENT_OBJDIR}/%.o: ${CLIENT_SRCDIR}/%.c | ${CLIENT_OBJDIR}
-	${CC} ${CFLAGS} ${DEPSFLAGS} ${INCLUDE} -c $< -o $@
+# -------------------------- #
+#         Debug Rules        #
+# -------------------------- #
 
-${SERVER_OBJDIR}/%.o: ${SERVER_SRCDIR}/%.c | ${SERVER_OBJDIR}
-	${CC} ${CFLAGS} ${DEPSFLAGS} ${INCLUDE} -c $< -o $@
+asan: $(NAME)
+debug:  $(NAME)
 
-${CLIENT_OBJDIR}/%.o: ${B_CLIENT_SRCDIR}/%.c | ${CLIENT_OBJDIR}
-	${CC} ${CFLAGS} ${DEPSFLAGS} ${INCLUDE} -c $< -o $@
+# -------------------------- #
+#        Build Rules         #
+# -------------------------- #
+$(OBJDIR):
+	@-mkdir -p $@
 
-${CLIENT_OBJDIR}/%.o: ${B_UTF8_SRCDIR}/%.c | ${CLIENT_OBJDIR}
-	${CC} ${CFLAGS} ${DEPSFLAGS} ${INCLUDE} -c $< -o $@
+$(OBJDIR)/%.o: %.c | $(OBJDIR)
+	@$(CC) $(CFLAGS) $(DEPFLAGS) $(INCLUDE) -c $< -o $@
 
-${SERVER_OBJDIR}/%.o: ${B_SERVER_SRCDIR}/%.c | ${SERVER_OBJDIR}
-	${CC} ${CFLAGS} ${DEPSFLAGS} ${INCLUDE} -c $< -o $@
-
-${SERVER_OBJDIR}/%.o: ${B_UTF8_SRCDIR}/%.c | ${SERVER_OBJDIR}
-	${CC} ${CFLAGS} ${DEPSFLAGS} ${INCLUDE} -c $< -o $@
-
-bonus: ${NAME_1} ${NAME_2}
-
+# -------------------------- #
+#       Cleanup Rules        #
+# -------------------------- #
 clean:
 	@make -C ${LIBFT_DIR} clean
-	${RM} ${CLIENT_OBJS} ${SERVER_OBJS} ${CLIENT_DEPS} ${SERVER_DEPS}
+	@${RM} ${CLIENT_OBJS} ${SERVER_OBJS} ${CLIENT_DEPS} ${SERVER_DEPS}
+	@echo "[MINITALK] $(BLUE)Deleted Compiled Files$(NC): *.o *.d"
 
-fclean: clean
+fclean:
 	@make -C ${LIBFT_DIR} fclean
-	${RM} -r ${NAME_1} ${NAME_2} ${CLIENT_OBJDIR} ${SERVER_OBJDIR}
+	@${RM} ${CLIENT_OBJS} ${SERVER_OBJS} ${CLIENT_DEPS} ${SERVER_DEPS}
+	@echo "[MINITALK] $(BLUE)Deleted Compiled Files$(NC): *.o *.d"
+	@${RM} -r ${NAME_1} ${NAME_2} ${OBJDIR}
+	@echo "[MINITALK] $(BLUE)Deleted Target File and Object File Dir$(NC): ${NAME_1} ${NAME_2} $(OBJDIR)"
 
 re: fclean all
 
+# -------------------------- #
+#  Include Dependency Files  #
+# -------------------------- #
 -include $(CLIENT_DEPS) $(SERVER_DEPS)
 
-.PHONY: all bonus clean fclean re
+# -------------------------- #
+#       Phony Targets        #
+# -------------------------- #
+.PHONY: all asan debug clean fclean re
+

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stanaka2 < stanaka2@student.42tokyo.jp>    +#+  +:+       +#+        */
+/*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 19:43:58 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/10/13 21:50:20 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/11/19 21:14:10 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ int	main(void)
 		server_error();
 	if (sigaction(SIGUSR2, &sa, NULL) == -1)
 		server_error();
+	char *s = malloc(1);
+	s[2] = 'A';
 	while (true)
 	{
 		if (g_client_pid != INITIAL)
