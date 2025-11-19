@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stanaka2 < stanaka2@student.42tokyo.jp>    +#+  +:+       +#+        */
+/*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 19:44:01 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/10/13 21:34:01 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/11/19 22:42:55 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,20 +28,15 @@ int	main(int argc, char **argv)
 		exit(1);
 	if (check_pid(argv[1]) == false)
 		exit(1);
-	pid = (pid_t)ft_atoi(argv[1]);
-	sigemptyset(&ack_sa.sa_mask);
-	sigaddset(&ack_sa.sa_mask, SIGUSR1);
-	ack_sa.sa_flags = SA_SIGINFO;
-	ack_sa.sa_sigaction = ack_handler;
-	sigaction(SIGUSR1, &ack_sa, NULL);
-	sigemptyset(&nak_sa.sa_mask);
-	sigaddset(&nak_sa.sa_mask, SIGUSR1);
-	sigaddset(&nak_sa.sa_mask, SIGUSR2);
-	nak_sa.sa_flags = SA_SIGINFO;
-	nak_sa.sa_sigaction = nak_handler;
-	sigaction(SIGUSR2, &nak_sa, NULL);
 	if (!utf8_validation(argv[2]))
 		ft_putendl_fd("[WARNING!!]Invalid UTF-8 byte sequence detected.", 2);
+	pid = (pid_t)ft_atoi(argv[1]);
+	if (set_signal_handler(&ack_sa, (int []){SIGUSR1, -1}, \
+		ack_handler, (int []){SIGUSR1, -1}) == false)
+		client_error();
+	if (set_signal_handler(&nak_sa, (int []){SIGUSR1, SIGUSR2, -1}, \
+		nak_handler, (int []){SIGUSR2, -1}) == false)
+		client_error();
 	sender(pid, (unsigned char *)argv[2]);
 }
 

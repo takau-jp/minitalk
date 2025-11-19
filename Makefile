@@ -6,7 +6,7 @@
 #    By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/13 19:52:15 by stanaka2          #+#    #+#              #
-#    Updated: 2025/11/19 21:18:08 by stanaka2         ###   ########.fr        #
+#    Updated: 2025/11/19 22:30:33 by stanaka2         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,8 +50,8 @@ INCLUDE = -I include ${LIBFT_INCLUDE}
 # -------------------------- #
 #     Source Directories     #
 # -------------------------- #
-SRCDIRS = mandatory/client mandatory/server
-SRCDIRS += bonus/client bonus/server bonus/utf8
+SRCDIRS = $(addprefix mandatory/, client server common)
+SRCDIRS += $(addprefix bonus/, client server common utf8)
 
 # -------------------------- #
 #        Source Files        #
@@ -60,15 +60,19 @@ SRCDIRS += bonus/client bonus/server bonus/utf8
 # mandatory
 CLIENT_SRCS =	client.c check_pid.c errors.c
 SERVER_SRCS =	server.c print_server_pid.c receive_bit.c process_byte.c
+COMMON_SRCS =	set_signal_handler.c
+CLIENT_SRCS += $(COMMON_SRCS)
+SERVER_SRCS += $(COMMON_SRCS)
 
 # bonus
 B_CLIENT_SRCS =	client_bonus.c check_pid_bonus.c errors_bonus.c utf8_validation_bonus.c
 B_SERVER_SRCS =	server_bonus.c print_server_pid_bonus.c receive_bit_bonus.c process_byte_bonus.c
+B_COMMON_SRCS =	set_signal_handler_bonus.c
 B_UTF8_SRCS +=	append_utf8_byte_sequence_bonus.c \
 				utf8_byte_validation_bonus.c utf8_codepoint_validation_bonus.c \
 				utf8_utils_bonus.c validate_utf8_byte_sequence_bonus.c
-B_CLIENT_SRCS += $(B_UTF8_SRCS)
-B_SERVER_SRCS += $(B_UTF8_SRCS)
+B_CLIENT_SRCS += $(B_COMMON_SRCS) $(B_UTF8_SRCS)
+B_SERVER_SRCS += $(B_COMMON_SRCS) $(B_UTF8_SRCS)
 
 # -------------------------- #
 #    ANSI Escape Sequence    #

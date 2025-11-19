@@ -6,7 +6,7 @@
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 19:49:55 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/11/10 19:27:45 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/11/19 22:53:16 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int	ft_get_decimal_exponent_80bit(t_my_double *my_double)
 	int	i;
 	int	decimal_exponent;
 
-	decimal_exponent = 0;
 	if (my_double->significand == 0)
 		return (0);
 	i = 0;

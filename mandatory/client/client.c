@@ -6,7 +6,7 @@
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 19:44:01 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/10/02 02:31:07 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/11/19 22:43:08 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,18 +29,11 @@ int	main(int argc, char **argv)
 	if (check_pid(argv[1]) == false)
 		exit(1);
 	pid = (pid_t)ft_atoi(argv[1]);
-	sigemptyset(&ack_sa.sa_mask);
-	sigaddset(&ack_sa.sa_mask, SIGUSR1);
-	ack_sa.sa_flags = SA_SIGINFO;
-	ack_sa.sa_sigaction = ack_handler;
-	if (sigaction(SIGUSR1, &ack_sa, NULL) == -1)
+	if (set_signal_handler(&ack_sa, (int []){SIGUSR1, -1}, \
+		ack_handler, (int []){SIGUSR1, -1}) == false)
 		client_error();
-	sigemptyset(&nak_sa.sa_mask);
-	sigaddset(&nak_sa.sa_mask, SIGUSR1);
-	sigaddset(&nak_sa.sa_mask, SIGUSR2);
-	nak_sa.sa_flags = SA_SIGINFO;
-	nak_sa.sa_sigaction = nak_handler;
-	if (sigaction(SIGUSR2, &nak_sa, NULL) == -1)
+	if (set_signal_handler(&nak_sa, (int []){SIGUSR1, SIGUSR2, -1}, \
+		nak_handler, (int []){SIGUSR2, -1}) == false)
 		client_error();
 	sender(pid, argv[2]);
 }

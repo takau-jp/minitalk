@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server_bonus.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stanaka2 < stanaka2@student.42tokyo.jp>    +#+  +:+       +#+        */
+/*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 14:25:15 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/10/13 22:02:45 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/11/19 22:51:45 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 # define BUF_CAPACITY 1017
 
 void		server_error(void);
+bool		set_signal_handler(struct sigaction *sa, int blocked_signums[], \
+	void (*signal_handler)(int, siginfo_t *, void *), int handled_signums[]);
 void		print_server_pid(void);
 uint8_t		receive_bit(int sig);
 void		process_byte(unsigned char byte, size_t *buf_len);

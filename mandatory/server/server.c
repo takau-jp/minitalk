@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stanaka2 < stanaka2@student.42tokyo.jp>    +#+  +:+       +#+        */
+/*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 19:43:58 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/10/13 21:50:49 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/11/19 22:46:45 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,9 @@ int	main(void)
 	struct sigaction	sa;
 
 	print_server_pid();
-	sigemptyset(&sa.sa_mask);
-	sigaddset(&sa.sa_mask, SIGUSR1);
-	sigaddset(&sa.sa_mask, SIGUSR2);
-	sa.sa_flags = SA_SIGINFO;
-	sa.sa_sigaction = receiver;
 	g_client_pid = INITIAL;
-	if (sigaction(SIGUSR1, &sa, NULL) == -1)
-		server_error();
-	if (sigaction(SIGUSR2, &sa, NULL) == -1)
+	if (set_signal_handler(&sa, (int []){SIGUSR1, SIGUSR2, -1}, \
+			receiver, (int []){SIGUSR1, SIGUSR2, -1}) == false)
 		server_error();
 	while (true)
 	{
