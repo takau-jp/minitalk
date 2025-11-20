@@ -6,14 +6,13 @@
 #    By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/13 19:52:15 by stanaka2          #+#    #+#              #
-#    Updated: 2025/11/19 22:30:33 by stanaka2         ###   ########.fr        #
+#    Updated: 2025/11/20 00:43:19 by stanaka2         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -------------------------- #
 #      Makefile Setting      #
 # -------------------------- #
-
 MAKEFLAGS += --no-print-directory
 
 # -------------------------- #
@@ -26,6 +25,7 @@ NAME_2 = server
 # -------------------------- #
 # 　　　Compiler Flags        #
 # -------------------------- #
+
 CFLAGS  = -Wall -Wextra -Werror
 
 ifeq ($(filter asan,$(MAKECMDGOALS)),asan)
@@ -119,7 +119,7 @@ endif
 # -------------------------- #
 #        Main Targets        #
 # -------------------------- #
-all: $(NAME)
+all:	$(NAME)
 
 $(NAME): ${NAME_1} ${NAME_2}
 
@@ -136,10 +136,10 @@ ${NAME_2}: ${SERVER_OBJS} ${LIBFT}
 # -------------------------- #
 ${LIBFT}:
 	@echo "[MINITALK] $(YELLOW)Build:$(NC) $@"
-ifeq ($(filter debug,$(MAKECMDGOALS)),debug)
-	@$(MAKE) -C $(LIBFT_DIR) debug
-else ifeq ($(filter asan,$(MAKECMDGOALS)),asan)
+ifeq ($(filter asan,$(MAKECMDGOALS)),asan)
 	@$(MAKE) -C $(LIBFT_DIR) asan
+else ifeq ($(filter debug,$(MAKECMDGOALS)),debug)
+	@$(MAKE) -C $(LIBFT_DIR) debug
 else
 	@$(MAKE) -C $(LIBFT_DIR)
 endif
@@ -148,14 +148,20 @@ endif
 #         Bonus Rules        #
 # -------------------------- #
 
-bonus: $(NAME)
+bonus:	$(NAME)
 
 # -------------------------- #
 #         Debug Rules        #
 # -------------------------- #
 
-asan: $(NAME)
+asan:	$(NAME)
 debug:  $(NAME)
+sbuild:
+	@make fclean
+	/usr/lib/llvm-12/bin/scan-build make
+	@make fclean
+	/usr/lib/llvm-12/bin/scan-build make bonus
+	@make fclean
 
 # -------------------------- #
 #        Build Rules         #
@@ -181,7 +187,7 @@ fclean:
 	@${RM} -r ${NAME_1} ${NAME_2} ${OBJDIR}
 	@echo "[MINITALK] $(BLUE)Deleted Target File and Object File Dir$(NC): ${NAME_1} ${NAME_2} $(OBJDIR)"
 
-re: fclean all
+re:	fclean all
 
 # -------------------------- #
 #  Include Dependency Files  #

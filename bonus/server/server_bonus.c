@@ -6,7 +6,7 @@
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 19:43:58 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/11/19 22:46:23 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/11/20 00:30:52 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,33 +38,6 @@ int	main(void)
 			pause();
 	}
 }
-
-// int	main(void)
-// {
-// 	struct sigaction	sa;
-
-// 	print_server_pid();
-// 	if (sigemptyset(&sa.sa_mask) == -1 \
-// 		|| sigaddset(&sa.sa_mask, SIGUSR1) == -1 \
-// 		|| sigaddset(&sa.sa_mask, SIGUSR2) == -1)
-// 		server_error();
-// 	sa.sa_flags = SA_SIGINFO;
-// 	sa.sa_sigaction = receiver;
-// 	g_client_pid = INITIAL;
-// 	if (sigaction(SIGUSR1, &sa, NULL) == -1 \
-// 		|| sigaction(SIGUSR2, &sa, NULL) == -1)
-// 		server_error();
-// 	while (true)
-// 	{
-// 		if (g_client_pid != INITIAL)
-// 		{
-// 			if (sleep(TIME_OUT + 1) == 0)
-// 				client_connection_error();
-// 		}
-// 		else
-// 			pause();
-// 	}
-// }
 
 void	receiver(int sig, siginfo_t *info, void *ucontext)
 {
