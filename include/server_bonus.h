@@ -6,7 +6,7 @@
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 14:25:15 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/11/19 22:51:45 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/11/20 16:45:17 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include "utf8_bonus.h"
 # include <signal.h>
 
-# define INITIAL 1
+# define INITIAL -1
 # define TIME_OUT 3
 # define BUF_SIZE 1024
 // BUF_CAPACITY = BUF_SIZE(1024) - BUF_UTF8_MAX_MARGIN(6) - NULL_TERMINATOR(1)

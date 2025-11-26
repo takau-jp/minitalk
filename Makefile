@@ -6,27 +6,52 @@
 #    By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/13 19:52:15 by stanaka2          #+#    #+#              #
-#    Updated: 2025/11/20 00:43:19 by stanaka2         ###   ########.fr        #
+#    Updated: 2025/11/21 19:52:57 by stanaka2         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -------------------------- #
+#        Phony Rules         #
+# -------------------------- #
+
+.PHONY: all bonus asan debug clean fclean re
+
+# -------------------------- #
 #      Makefile Setting      #
 # -------------------------- #
+
+SHELL =	/bin/bash
+
+ifeq ($(filter re,$(MAKECMDGOALS)),re)
 MAKEFLAGS += --no-print-directory
+else
+MAKEFLAGS += --no-print-directory -j
+endif
+
+RM = rm -f
 
 # -------------------------- #
 # 　　　　　　Target　　　      #
 # -------------------------- #
+
 NAME = minitalk
 NAME_1 = client
 NAME_2 = server
 
 # -------------------------- #
+# 　　     　LIBFT            #
+# -------------------------- #
+
+LIBFT_DIR = libft
+LIBFT = $(LIBFT_DIR)/libft.a
+LIBFT_INCLUDE_DIR = $(LIBFT_DIR)/include
+
+# -------------------------- #
 # 　　　Compiler Flags        #
 # -------------------------- #
 
-CFLAGS  = -Wall -Wextra -Werror
+CC		= cc
+CFLAGS	= -Wall -Werror -Wextra
 
 ifeq ($(filter asan,$(MAKECMDGOALS)),asan)
 CFLAGS += -g -fsanitize=address
@@ -35,21 +60,16 @@ CFLAGS += -g
 endif
 
 # -------------------------- #
-# 　　     　LIBFT            #
+#          Include           #
 # -------------------------- #
-LIBFT_DIR = libft
-LIBFT = ${LIBFT_DIR}/libft.a
-LIBFT_INCLUDE = -I ${LIBFT_DIR}/include
 
-# -------------------------- #
-#    Dependency & Include    #
-# -------------------------- #
-DEPFLAGS = -MMD
-INCLUDE = -I include ${LIBFT_INCLUDE}
+INCLUDE_DIR = include
+INCLUDE		= -I $(INCLUDE_DIR) -I $(LIBFT_INCLUDE_DIR)
 
 # -------------------------- #
 #     Source Directories     #
 # -------------------------- #
+
 SRCDIRS = $(addprefix mandatory/, client server common)
 SRCDIRS += $(addprefix bonus/, client server common utf8)
 
@@ -75,67 +95,94 @@ B_CLIENT_SRCS += $(B_COMMON_SRCS) $(B_UTF8_SRCS)
 B_SERVER_SRCS += $(B_COMMON_SRCS) $(B_UTF8_SRCS)
 
 # -------------------------- #
-#    ANSI Escape Sequence    #
-# -------------------------- #
-GREEN  = \033[0;32m
-BLUE   = \033[0;34m
-RED    = \033[0;31m
-YELLOW = \033[0;33m
-NC     = \033[0m
-MOVE_LINE_TOP = \033[1G
-MOVE_ABOVE_LINE_TOP = \033[1F
-CLEAR_LINE = \033[2K
-
-# -------------------------- #
 #        VPATH Setup         #
 # -------------------------- #
+
 $(foreach dir,$(SRCDIRS), $(eval vpath %.c $(dir)))
 
 # -------------------------- #
-#  Object & Dependency Setup #
+#     Object & Dependency    #
 # -------------------------- #
-OBJDIR = objs
+
+OBJ_DIR		=	.obj
 # mandatory
-CLIENT_OBJS   := $(patsubst %.c, $(OBJDIR)/%.o, $(notdir $(CLIENT_SRCS)))
-SERVER_OBJS   := $(patsubst %.c, $(OBJDIR)/%.o, $(notdir $(SERVER_SRCS)))
-CLIENT_DEPS := $(patsubst %.c, $(OBJDIR)/%.d, $(notdir $(CLIENT_SRCS)))
-SERVER_DEPS := $(patsubst %.c, $(OBJDIR)/%.d, $(notdir $(SERVER_SRCS)))
+CLIENT_OBJS	:= $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(CLIENT_SRCS)))
+SERVER_OBJS	:= $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(SERVER_SRCS)))
 # bonus
-B_CLIENT_OBJS   := $(patsubst %.c, $(OBJDIR)/%.o, $(notdir $(B_CLIENT_SRCS)))
-B_SERVER_OBJS   := $(patsubst %.c, $(OBJDIR)/%.o, $(notdir $(B_SERVER_SRCS)))
-B_CLIENT_DEPS := $(patsubst %.c, $(OBJDIR)/%.d, $(notdir $(B_CLIENT_SRCS)))
-B_SERVER_EPS := $(patsubst %.c, $(OBJDIR)/%.d, $(notdir $(B_SERVER_SRCS)))
+B_CLIENT_OBJS	:= $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(B_CLIENT_SRCS)))
+B_SERVER_OBJS   := $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(B_SERVER_SRCS)))
+
+DEP_DIR		=	.dep
+DEPFLAGS	=	-MT $@ -MMD -MP -MF $(DEP_DIR)/$*.d
+# mandatory
+CLIENT_DEPS		:= $(patsubst %.c, $(DEP_DIR)/%.d, $(notdir $(CLIENT_SRCS)))
+SERVER_DEPS		:= $(patsubst %.c, $(DEP_DIR)/%.d, $(notdir $(SERVER_SRCS)))
+# bonus
+B_CLIENT_DEPS	:= $(patsubst %.c, $(DEP_DIR)/%.d, $(notdir $(B_CLIENT_SRCS)))
+B_SERVER_DEPS	:= $(patsubst %.c, $(DEP_DIR)/%.d, $(notdir $(B_SERVER_SRCS)))
 
 # -------------------------- #
 #       Bonus Switching      #
 # -------------------------- #
+
 ifeq ($(filter bonus,$(MAKECMDGOALS)),bonus)
-CLIENT_OBJS = ${B_CLIENT_OBJS}
-SERVER_OBJS = ${B_SERVER_OBJS}
-CLIENT_DEPS	= ${B_CLIENT_DEPS}
-SERVER_DEPS	= ${B_SERVER_DEPS}
+CLIENT_OBJS = $(B_CLIENT_OBJS)
+SERVER_OBJS = $(B_SERVER_OBJS)
+CLIENT_DEPS	= $(B_CLIENT_DEPS)
+SERVER_DEPS	= $(B_SERVER_DEPS)
 endif
+
+# -------------------------- #
+#    ANSI Escape Sequence    #
+# -------------------------- #
+
+DEF_COLOR	= \033[0;39m
+GRAY 		= \033[0;90m
+RED 		= \033[0;91m
+GREEN 		= \033[0;92m
+YELLOW 		= \033[0;93m
+BLUE 		= \033[0;94m
+MAGENTA 	= \033[0;95m
+CYAN 		= \033[0;96m
+WHITE 		= \033[0;97m
 
 # -------------------------- #
 #        Main Targets        #
 # -------------------------- #
-all:	$(NAME)
 
-$(NAME): ${NAME_1} ${NAME_2}
+all:	$(NAME_1) $(NAME_2)
 
-${NAME_1}: ${CLIENT_OBJS} ${LIBFT}
-	@${CC} $(CFLAGS) $^ -o $@  
-	@echo "[MINITALK] $(GREEN)Build Complete:$(NC) $@"
+bonus:	$(NAME_1) $(NAME_2)
 
-${NAME_2}: ${SERVER_OBJS} ${LIBFT}
-	@${CC} $(CFLAGS) $^ -o $@  
-	@echo "[MINITALK] $(GREEN)Build Complete:$(NC) $@"
+$(NAME): $(NAME_1) $(NAME_2)
+
+$(NAME_1): $(CLIENT_OBJS) $(LIBFT)
+	@$(CC) $(CFLAGS) $^ -o $@  
+	@echo -e "[MINITALK] $(GREEN)Build Complete:$(DEF_COLOR) $@"
+
+$(NAME_2): $(SERVER_OBJS) $(LIBFT)
+	@$(CC) $(CFLAGS) $^ -o $@  
+	@echo -e "[MINITALK] $(GREEN)Build Complete:$(DEF_COLOR) $@"
+
+# -------------------------- #
+#        Build Rules         #
+# -------------------------- #
+
+$(OBJ_DIR)/%.o: %.c | $(OBJ_DIR) $(DEP_DIR)
+	@$(CC) $(CFLAGS) $(DEPFLAGS) $(INCLUDE) -c $< -o $@
+
+$(OBJ_DIR):
+	@-mkdir -p $@
+
+$(DEP_DIR):
+	@-mkdir -p $@
 
 # -------------------------- #
 #         LIBFT Rule         #
 # -------------------------- #
-${LIBFT}:
-	@echo "[MINITALK] $(YELLOW)Build:$(NC) $@"
+
+$(LIBFT):
+	@echo -e "[MINITALK] $(YELLOW)Build:$(DEF_COLOR) $@"
 ifeq ($(filter asan,$(MAKECMDGOALS)),asan)
 	@$(MAKE) -C $(LIBFT_DIR) asan
 else ifeq ($(filter debug,$(MAKECMDGOALS)),debug)
@@ -145,57 +192,43 @@ else
 endif
 
 # -------------------------- #
-#         Bonus Rules        #
-# -------------------------- #
-
-bonus:	$(NAME)
-
-# -------------------------- #
 #         Debug Rules        #
 # -------------------------- #
 
 asan:	$(NAME)
+
 debug:  $(NAME)
+
 sbuild:
-	@make fclean
+	@$(MAKE) fclean
 	/usr/lib/llvm-12/bin/scan-build make
-	@make fclean
+	@$(MAKE) fclean
 	/usr/lib/llvm-12/bin/scan-build make bonus
-	@make fclean
+	@$(MAKE) fclean
 
-# -------------------------- #
-#        Build Rules         #
-# -------------------------- #
-$(OBJDIR):
-	@-mkdir -p $@
-
-$(OBJDIR)/%.o: %.c | $(OBJDIR)
-	@$(CC) $(CFLAGS) $(DEPFLAGS) $(INCLUDE) -c $< -o $@
+norm:
+	@norminette -o mandatory bonus $(LIBFT_DIR) $(INCLUDE_DIR) | grep Error || true
 
 # -------------------------- #
 #       Cleanup Rules        #
 # -------------------------- #
+
 clean:
-	@make -C ${LIBFT_DIR} clean
-	@${RM} ${CLIENT_OBJS} ${SERVER_OBJS} ${CLIENT_DEPS} ${SERVER_DEPS}
-	@echo "[MINITALK] $(BLUE)Deleted Compiled Files$(NC): *.o *.d"
+	@$(MAKE) -C $(LIBFT_DIR) clean
+	@$(RM) $(CLIENT_OBJS) $(SERVER_OBJS) $(CLIENT_DEPS) $(SERVER_DEPS) $(B_CLIENT_OBJS) $(B_SERVER_OBJS) $(B_CLIENT_DEPS) $(B_SERVER_DEPS)
+	@echo -e "[MINITALK] $(BLUE)Deleted Compiled Files$(DEF_COLOR): *.o *.d"
 
 fclean:
-	@make -C ${LIBFT_DIR} fclean
-	@${RM} ${CLIENT_OBJS} ${SERVER_OBJS} ${CLIENT_DEPS} ${SERVER_DEPS}
-	@echo "[MINITALK] $(BLUE)Deleted Compiled Files$(NC): *.o *.d"
-	@${RM} -r ${NAME_1} ${NAME_2} ${OBJDIR}
-	@echo "[MINITALK] $(BLUE)Deleted Target File and Object File Dir$(NC): ${NAME_1} ${NAME_2} $(OBJDIR)"
+	@$(MAKE) -C $(LIBFT_DIR) fclean
+	@$(RM) $(CLIENT_OBJS) $(SERVER_OBJS) $(CLIENT_DEPS) $(SERVER_DEPS) $(B_CLIENT_OBJS) $(B_SERVER_OBJS) $(B_CLIENT_DEPS) $(B_SERVER_DEPS)
+	@echo -e "[MINITALK] $(BLUE)Deleted Compiled Files$(DEF_COLOR): *.o *.d"
+	@$(RM) -r $(NAME_1) $(NAME_2) $(OBJ_DIR) $(DEP_DIR)
+	@echo -e "[MINITALK] $(BLUE)Deleted Target File and Object File Dir$(DEF_COLOR): $(NAME_1) $(NAME_2) $(OBJ_DIR) $(DEP_DIR)"
 
 re:	fclean all
 
 # -------------------------- #
 #  Include Dependency Files  #
 # -------------------------- #
+
 -include $(CLIENT_DEPS) $(SERVER_DEPS)
-
-# -------------------------- #
-#       Phony Targets        #
-# -------------------------- #
-.PHONY: all asan debug clean fclean re
-

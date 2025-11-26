@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   append_utf8_byte_sequence_bonus.c                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stanaka2 < stanaka2@student.42tokyo.jp>    +#+  +:+       +#+        */
+/*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 15:29:26 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/10/14 07:34:49 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/11/24 16:20:03 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,11 @@ void	append_utf8_leading_byte(
 		utf8->len = 0;
 	}
 	else if (utf8->expected_len == 2 && !check_utf8_overlong_encoding(utf8))
+	{
+		append_utf8_replacement_character(buf, buf_len);
+		utf8->len = 0;
+	}
+	else if (utf8->expected_len == 4 && !check_unicode_scalar_value(utf8))
 	{
 		append_utf8_replacement_character(buf, buf_len);
 		utf8->len = 0;

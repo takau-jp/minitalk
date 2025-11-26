@@ -6,7 +6,7 @@
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 00:05:42 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/11/19 22:37:19 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/11/20 16:44:51 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "libft.h"
 # include <signal.h>
 
-# define INITIAL 1
+# define INITIAL -1
 # define TIME_OUT 3
 # define BUF_SIZE 1024
 # define BUF_CAPACITY 1023 // BUF_SIZE - NULL_TERMINATOR

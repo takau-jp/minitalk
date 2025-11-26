@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validate_utf8_byte_sequence_bonus.c                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stanaka2 < stanaka2@student.42tokyo.jp>    +#+  +:+       +#+        */
+/*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 21:07:31 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/10/14 07:35:01 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/11/24 17:15:29 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,11 @@ bool	validate_utf8_leading_byte(t_utf8 *utf8)
 		utf8->len = 0;
 		return (false);
 	}
+	else if (utf8->expected_len == 4 && !check_unicode_scalar_value(utf8))
+	{
+		utf8->len = 0;
+		return (false);
+	}
 	return (true);
 }
 
@@ -57,11 +62,6 @@ bool	validate_utf8_trailing_byte(t_utf8 *utf8)
 	}
 	if (utf8->len == utf8->expected_len)
 	{
-		if (!is_noncharacter_codepoint(decode_utf8(utf8)))
-		{
-			utf8->len = 0;
-			return (false);
-		}
 		utf8->len = 0;
 	}
 	return (true);

@@ -5,51 +5,72 @@
 #                                                     +:+ +:+         +:+      #
 #    By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/11/15 16:13:11 by stanaka2          #+#    #+#              #
-#    Updated: 2025/11/20 00:13:20 by stanaka2         ###   ########.fr        #
+#    Created: 2025/04/24 21:27:03 by stanaka2          #+#    #+#              #
+#    Updated: 2025/11/21 20:14:56 by stanaka2         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -------------------------- #
-# 　　　Target & OS Info      #
+#       Phony Targets        #
 # -------------------------- #
-NAME    = libft.a
-OS      = $(shell uname -s)
+
+.PHONY: all clean fclean re asan debug
+
+# -------------------------- #
+#      Makefile Setting      #
+# -------------------------- #
+
+OS		=	$(shell uname -s)
+
+SHELL	=	/bin/bash
+
+MAKEFLAGS += --no-print-directory
+
+RM = rm -f
+
+# -------------------------- #
+# 　　    　 Target           #
+# -------------------------- #
+
+NAME =	libft.a
 
 # -------------------------- #
 # 　　　Compiler Flags        #
 # -------------------------- #
-CFLAGS  = -Wall -Wextra -Werror
+
+CFLAGS  =	-Wall -Wextra -Werror
 
 ifeq ($(MAKECMDGOALS), asan)
-CFLAGS += -g -fsanitize=address
+CFLAGS +=	-g -fsanitize=address
 endif
 
 ifeq ($(MAKECMDGOALS), debug)
-CFLAGS += -g
+CFLAGS +=	-g
 endif
 
 # -------------------------- #
-#    Dependency & Include    #
+#          Include           #
 # -------------------------- #
-DEPFLAGS = -MMD
-INCLUDE  = -I ./include
+
+INCLUDE_DIR	=	./include
+INCLUDE  	=	-I $(INCLUDE_DIR)
 
 # -------------------------- #
 #     Source Directories     #
 # -------------------------- #
-SRCDIR  = src
-SRCDIRS = $(addprefix $(SRCDIR)/, ctype stdio stdlib string lst math)
-SRCDIRS += get_next_line
-SRCDIRS += printf \
-		   $(addprefix printf/, \
-			   read_conversion \
-			   print_conversion \
-			   print_conversion/binary64 \
-			   print_conversion/80bit \
-			   print_conversion/float_common_utils \
-			   print_conversion/wchar_to_utf8 \
-		   )
+
+SRC_DIR  =	src
+SRC_DIRS =	$(addprefix $(SRC_DIR)/, ctype stdio stdlib string lst math)
+SRC_DIRS +=	get_next_line
+SRC_DIRS +=	printf \
+			$(addprefix printf/, \
+				read_conversion \
+				print_conversion \
+				print_conversion/binary64 \
+				print_conversion/80bit \
+				print_conversion/float_common_utils \
+				print_conversion/wchar_to_utf8 \
+			)
 
 # -------------------------- #
 #        Source Files        #
@@ -150,36 +171,43 @@ SRCS += ft_utf8_utils.c
 # -------------------------- #
 #    ANSI Escape Sequence    #
 # -------------------------- #
-GREEN  = \033[0;32m
-BLUE   = \033[0;34m
-RED    = \033[0;31m
-YELLOW = \033[0;33m
-NC     = \033[0m
-MOVE_LINE_TOP = \033[1G
-MOVE_ABOVE_LINE_TOP = \033[1F
-CLEAR_LINE = \033[2K
+
+DEF_COLOR	= \033[0;39m
+GRAY 		= \033[0;90m
+RED 		= \033[0;91m
+GREEN 		= \033[0;92m
+YELLOW 		= \033[0;93m
+BLUE 		= \033[0;94m
+MAGENTA 	= \033[0;95m
+CYAN 		= \033[0;96m
+WHITE 		= \033[0;97m
 
 # -------------------------- #
 #        VPATH Setup         #
 # -------------------------- #
-$(foreach dir,$(SRCDIRS), $(eval vpath %.c $(dir)))
+
+$(foreach dir,$(SRC_DIRS), $(eval vpath %.c $(dir)))
 
 # -------------------------- #
-#  Object & Dependency Setup #
+#     Object & Dependency    #
 # -------------------------- #
-OBJDIR = objs
-OBJS   := $(patsubst %.c, $(OBJDIR)/%.o, $(notdir $(SRCS)))
 
-DEPS := $(patsubst %.c, $(OBJDIR)/%.d, $(notdir $(SRCS)))
+OBJ_DIR	=	.obj
+OBJS	=	$(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(SRCS)))
+
+DEP_DIR		=	.dep
+DEPFLAGS	=	-MT $@ -MMD -MP -MF $(DEP_DIR)/$*.d
+DEPS		=	$(patsubst %.c, $(DEP_DIR)/%.d, $(notdir $(SRCS)))
 
 # -------------------------- #
 #         Main Targets       #
 # -------------------------- #
+
 all: $(NAME)
 
 $(NAME): $(OBJS)
 	@$(AR) rcs $@ $?
-	@echo "[LIBFT] $(GREEN)Build Complete:$(NC) $@"
+	@echo -e "[LIBFT] $(GREEN)Build Complete:$(DEF_COLOR) $@"
 
 # -------------------------- #
 #         Debug Rules        #
@@ -191,33 +219,34 @@ debug:  $(NAME)
 # -------------------------- #
 #        Build Rules         #
 # -------------------------- #
-$(OBJDIR):
+
+$(OBJ_DIR)/%.o: %.c | $(OBJ_DIR) $(DEP_DIR)
+	@$(CC) $(CFLAGS) $(INCLUDE) $(DEPFLAGS) -c $< -o $@
+
+$(OBJ_DIR):
 	@-mkdir -p $@
 
-$(OBJDIR)/%.o: %.c | $(OBJDIR)
-	@$(CC) $(CFLAGS) $(INCLUDE) $(DEPFLAGS) -c $< -o $@
+$(DEP_DIR):
+	@-mkdir -p $@
 
 # -------------------------- #
 #       Cleanup Rules        #
 # -------------------------- #
+
 clean:
 	@$(RM) $(OBJS) $(DEPS)
-	@echo "[LIBFT] $(BLUE)Deleted Compiled Files$(NC): *.o *.d"
+	@echo -e "[LIBFT] $(BLUE)Deleted Compiled Files$(DEF_COLOR): *.o *.d"
 
 fclean:
 	@$(RM) $(OBJS) $(DEPS)
-	@echo "[LIBFT] $(BLUE)Deleted Compiled Files$(NC): *.o *.d"
-	@$(RM) -r $(NAME) $(OBJDIR)
-	@echo "[LIBFT] $(BLUE)Deleted Target File and Object File Dir$(NC): $(NAME) $(OBJDIR)"
+	@echo -e "[LIBFT] $(BLUE)Deleted Compiled Files$(DEF_COLOR): *.o *.d"
+	@$(RM) -r $(NAME) $(OBJ_DIR) $(DEP_DIR)
+	@echo -e "[LIBFT] $(BLUE)Deleted Target File and Object File Dir$(DEF_COLOR): $(NAME) $(OBJ_DIR) $(DEP_DIR)"
 
 re: fclean all
 
 # -------------------------- #
 #  Include Dependency Files  #
 # -------------------------- #
--include $(DEPS)
 
-# -------------------------- #
-#       Phony Targets        #
-# -------------------------- #
-.PHONY: all asan debug clean fclean re
+-include $(DEPS)

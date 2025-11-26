@@ -6,13 +6,14 @@
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 19:44:01 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/11/19 22:42:55 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/11/24 17:14:48 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "client_bonus.h"
 
 void	sender(pid_t pid, unsigned char *text);
+void	backoff_wait_ack(void);
 void	ack_handler(int sig, siginfo_t *info, void *ucontext);
 void	nak_handler(int sig, siginfo_t *info, void *ucontext);
 
@@ -24,10 +25,8 @@ int	main(int argc, char **argv)
 	struct sigaction	ack_sa;
 	struct sigaction	nak_sa;
 
-	if (argc != 3)
-		exit(1);
-	if (check_pid(argv[1]) == false)
-		exit(1);
+	if (argc != 3 || check_pid(argv[1]) == false)
+		invalid_argument_error();
 	if (!utf8_validation(argv[2]))
 		ft_putendl_fd("[WARNING!!]Invalid UTF-8 byte sequence detected.", 2);
 	pid = (pid_t)ft_atoi(argv[1]);
@@ -59,13 +58,29 @@ void	sender(pid_t pid, unsigned char *text)
 				sig = SIGUSR2;
 			if (kill(pid, sig) == -1)
 				server_connection_error();
-			while (g_server_info == pid)
-				;
+			backoff_wait_ack();
 		}
 		if (*text == '\0')
 			break ;
 		text++;
 	}
+}
+
+void	backoff_wait_ack(void)
+{
+	int	wait_time;
+	int	timeout;
+
+	timeout = ACK_TIME_OUT;
+	wait_time = 1;
+	while (g_server_info != ACK_RESPONSE && timeout > 0)
+	{
+		usleep(wait_time);
+		timeout -= wait_time;
+		wait_time *= 2;
+	}
+	if (g_server_info != ACK_RESPONSE)
+		server_connection_error();
 }
 
 void	ack_handler(int sig, siginfo_t *info, void *ucontext)

@@ -6,7 +6,7 @@
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 19:43:58 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/11/19 22:46:45 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/11/21 17:42:42 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,25 +72,26 @@ void	init_for_new_client(uint8_t *bit_count, size_t *buf_len, pid_t pid)
 	*bit_count = 0;
 	*buf_len = 0;
 	g_client_pid = pid;
-	if (ft_putstr_fd_bytes("<CLIENT PID: ", 1) == -1)
+	if (ft_putstr_fd_bytes("<CLIENT PID: ", STDOUT_FILENO) == -1)
 		server_error();
-	if (ft_putnbr_fd_bytes(g_client_pid, 1) == -1)
+	if (ft_putnbr_fd_bytes(g_client_pid, STDOUT_FILENO) == -1)
 		server_error();
-	if (ft_putchar_fd_bytes('>', 1) == -1)
+	if (ft_putchar_fd_bytes('>', STDOUT_FILENO) == -1)
 		server_error();
 }
 
 void	server_error(void)
 {
-	ft_putendl_fd("SERVER ERROR!!!", 2);
+	ft_putendl_fd("SERVER ERROR!!!", STDERR_FILENO);
 	if (g_client_pid != INITIAL)
 		kill(g_client_pid, SIGUSR2);
-	exit(1);
+	exit(EXIT_FAILURE);
 }
 
 void	client_connection_error(void)
 {
 	g_client_pid = INITIAL;
-	if (ft_putendl_fd_bytes("\nCLIENT CONNECTION ERROR!!!", 2) == -1)
+	if (ft_putendl_fd_bytes(\
+			"\nCLIENT CONNECTION ERROR!!!", STDERR_FILENO) == -1)
 		server_error();
 }

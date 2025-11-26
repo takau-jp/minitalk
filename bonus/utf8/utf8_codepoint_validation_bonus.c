@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utf8_codepoint_validation_bonus.c                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stanaka2 < stanaka2@student.42tokyo.jp>    +#+  +:+       +#+        */
+/*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 19:03:22 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/10/13 21:49:44 by stanaka2         ###   ########.fr       */
+/*   Updated: 2025/11/24 16:17:11 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,11 @@ bool	is_surrogate_codepoint(t_utf8 *utf8)
 
 bool	is_over_0x10ffff_codepoint(t_utf8 *utf8)
 {
+	if (utf8->len == 1 && utf8->expected_len == 4)
+	{
+		if (utf8->byte_sequences[0] > 0b11110100)
+			return (true);
+	}
 	if (utf8->len == 2 && utf8->expected_len == 4)
 	{
 		if (utf8->byte_sequences[0] == 0b11110100 \
