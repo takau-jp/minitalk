@@ -23,8 +23,8 @@ int	main(void)
 {
 	struct sigaction	sa;
 
-	print_server_pid();
 	g_client_pid = INITIAL;
+	print_server_pid();
 	if (set_signal_handler(&sa, (int []){SIGUSR1, SIGUSR2, -1}, \
 			receiver, (int []){SIGUSR1, SIGUSR2, -1}) == false)
 		server_error();
