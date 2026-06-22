@@ -1,27 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   pf_check_int_overflow.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/24 21:58:34 by stanaka2          #+#    #+#             */
-/*   Updated: 2026/06/01 22:56:57 by stanaka2         ###   ########.fr       */
+/*   Created: 2026/04/19 23:18:31 by stanaka2          #+#    #+#             */
+/*   Updated: 2026/06/01 22:10:11 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#include <limits.h>
+#include <stdbool.h>
 
-// libft
-# include "ft_ctype.h"
-# include "ft_lst.h"
-# include "ft_math.h"
-# include "ft_stdio.h"
-# include "ft_stdlib.h"
-# include "ft_string.h"
+#include "ft_ctype.h"
 
-// get_next_line
-char	*get_next_line(int fd);
+bool	pf_check_int_overflow(const char *format)
+{
+	long	n;
 
-#endif
+	n = 0;
+	while (ft_isdigit(*format))
+	{
+		n = n * 10 + (*format - '0');
+		if (INT_MAX < n)
+			return (true);
+		format++;
+	}
+	return (false);
+}

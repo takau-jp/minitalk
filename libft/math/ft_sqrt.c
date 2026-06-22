@@ -1,27 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   ft_sqrt.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/24 21:58:34 by stanaka2          #+#    #+#             */
-/*   Updated: 2026/06/01 22:56:57 by stanaka2         ###   ########.fr       */
+/*   Created: 2025/07/30 18:46:06 by stanaka2          #+#    #+#             */
+/*   Updated: 2026/06/01 21:02:51 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+/*
+#include <unicode/utypes.h> is workaround for #include <float.h>
+due to norminette=3.3.55 bug.
+*/
+#include <unicode/utypes.h>
 
-// libft
-# include "ft_ctype.h"
-# include "ft_lst.h"
-# include "ft_math.h"
-# include "ft_stdio.h"
-# include "ft_stdlib.h"
-# include "ft_string.h"
+#include "ft_math.h"
 
-// get_next_line
-char	*get_next_line(int fd);
+// Babylonian method
+double	ft_sqrt(double x)
+{
+	double	guess;
 
-#endif
+	if (x < 0)
+		return (-1);
+	if (x == 0 || x == 1)
+		return (x);
+	guess = x / 2.0;
+	while (ft_fabs((guess * guess - x)) > DBL_EPSILON)
+	{
+		guess = (guess + x / guess) / 2.0;
+	}
+	return (guess);
+}

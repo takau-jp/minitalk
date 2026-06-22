@@ -1,27 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/24 21:58:34 by stanaka2          #+#    #+#             */
-/*   Updated: 2026/06/01 22:56:57 by stanaka2         ###   ########.fr       */
+/*   Created: 2025/04/25 13:08:41 by stanaka2          #+#    #+#             */
+/*   Updated: 2026/06/03 21:08:18 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#include "ft_stdio.h"
+#include "ft_string.h"
+#include "./ft_stdio_internal.h"
 
-// libft
-# include "ft_ctype.h"
-# include "ft_lst.h"
-# include "ft_math.h"
-# include "ft_stdio.h"
-# include "ft_stdlib.h"
-# include "ft_string.h"
+void	ft_putstr_fd(char *s, int fd)
+{
+	size_t	len;
+	size_t	chunk;
+	ssize_t	write_res;
 
-// get_next_line
-char	*get_next_line(int fd);
-
-#endif
+	if (!s)
+		return ;
+	len = ft_strlen(s);
+	while (len)
+	{
+		chunk = WRITE_BLOCK_SIZE;
+		if (len < WRITE_BLOCK_SIZE)
+			chunk = len;
+		write_res = write(fd, s, chunk);
+		if (write_res <= 0)
+			return ;
+		s += write_res;
+		len -= write_res;
+	}
+}

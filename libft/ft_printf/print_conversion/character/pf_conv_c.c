@@ -1,27 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   pf_conv_c.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/24 21:58:34 by stanaka2          #+#    #+#             */
-/*   Updated: 2026/06/01 22:56:57 by stanaka2         ###   ########.fr       */
+/*   Created: 2026/04/26 17:39:16 by stanaka2          #+#    #+#             */
+/*   Updated: 2026/06/03 21:33:25 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#include "ft_printf/ft_printf.h"
+#include "ft_printf/print_utils.h"
 
-// libft
-# include "ft_ctype.h"
-# include "ft_lst.h"
-# include "ft_math.h"
-# include "ft_stdio.h"
-# include "ft_stdlib.h"
-# include "ft_string.h"
+void	pf_conv_c(va_list *ap, t_ctx *ctx, t_conv *conv)
+{
+	int	c;
 
-// get_next_line
-char	*get_next_line(int fd);
-
-#endif
+	c = va_arg(*ap, int);
+	if (conv->width_flags != '-')
+		pf_print_space_width(ctx, conv, 1);
+	pf_print_char(ctx, (char)c);
+	if (conv->width_flags == '-')
+		pf_print_space_width(ctx, conv, 1);
+}

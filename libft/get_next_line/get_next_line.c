@@ -6,123 +6,81 @@
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 00:47:51 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/08/24 13:56:05 by stanaka2         ###   ########.fr       */
+/*   Updated: 2026/06/01 21:03:43 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "ft_stdlib.h"
+#include "./get_next_line.h"
 
-static bool	ft_read_file(t_gnl_mem *mem, int fd);
-static bool	ft_find_newline(t_gnl_mem *mem);
-static char	*ft_get_line(t_gnl_mem *mem);
-static void	ft_get_remainder_line(t_gnl_mem *mem);
+static bool	read_file(int fd, t_buf *buf, t_line *line);
+static bool	append_to_line(t_line *line, char c);
 
 char	*get_next_line(int fd)
 {
-	static t_gnl_mem	mem;
-	char				*next_line;
+	static t_buf	buf;
+	t_line			line;
 
-	if (mem.len != 0)
+	line.data = NULL;
+	line.len = 0;
+	line.allocated_size = 0;
+	if (!read_file(fd, &buf, &line))
 	{
-		mem.line = (char *)malloc(mem.len);
-		if (!mem.line)
-			return (ft_gnl_mem_reset(&mem));
-		ft_memcpy(mem.line, mem.remainder_line, mem.len);
+		buf.read_bytes = 0;
+		buf.used_bytes = 0;
+		free(line.data);
+		return (NULL);
 	}
-	if (!ft_read_file(&mem, fd))
-		return (ft_gnl_mem_reset(&mem));
-	if (mem.eof && mem.len == 0)
-		return (ft_gnl_mem_reset(&mem));
-	next_line = ft_get_line(&mem);
-	if (!next_line)
-		return (ft_gnl_mem_reset(&mem));
-	ft_get_remainder_line(&mem);
-	return (next_line);
+	return (line.data);
 }
 
-static bool	ft_read_file(t_gnl_mem *mem, int fd)
+static bool	read_file(int fd, t_buf *buf, t_line *line)
 {
-	char	*buf;
-	ssize_t	res;
-	char	*tmp;
-
-	buf = (char *)malloc(BUFFER_SIZE);
-	if (!buf)
-		return (false);
-	while (!ft_find_newline(mem) && !mem->eof)
+	while (true)
 	{
-		res = read(fd, buf, BUFFER_SIZE);
-		if (res == 0)
-			mem->eof = true;
-		if (res != -1)
-			tmp = ft_gnl_mem_join(mem, buf, res);
-		if (res == -1 || !tmp)
+		if (buf->used_bytes == buf->read_bytes)
 		{
-			free(buf);
-			return (false);
+			buf->used_bytes = 0;
+			buf->read_bytes = read(fd, buf->data, BUFFER_SIZE);
+			if (buf->read_bytes < 0)
+				return (false);
+			else if (buf->read_bytes == 0)
+				return (true);
 		}
-		free(mem->line);
-		mem->line = tmp;
-		mem->len += res;
-	}
-	free(buf);
-	return (true);
-}
-
-static bool	ft_find_newline(t_gnl_mem *mem)
-{
-	size_t	i;
-
-	i = mem->newline_offset;
-	while (i < mem->len)
-	{
-		if (mem->line[i] == '\0' || mem->line[i] == '\n')
+		if (!append_to_line(line, buf->data[buf->used_bytes]))
+			return (false);
+		if (buf->data[buf->used_bytes] == '\n' \
+			|| buf->data[buf->used_bytes] == '\0')
 		{
-			if (i != 0 && mem->line[i] == '\0')
-				mem->newline_offset = i - 1;
-			else
-				mem->newline_offset = i;
-			mem->is_newline = true;
+			++(buf->used_bytes);
 			return (true);
 		}
-		i++;
+		++(buf->used_bytes);
 	}
-	mem->newline_offset = i;
-	mem->is_newline = false;
-	return (false);
 }
 
-static char	*ft_get_line(t_gnl_mem *mem)
+static bool	append_to_line(t_line *line, char c)
 {
-	char	*line;
-	size_t	len;
-
-	if (mem->eof && mem->is_newline == false)
-		len = mem->len;
-	else
-		len = mem->newline_offset + 1;
-	line = (char *)malloc(len + 1);
-	if (!line)
-		return (NULL);
-	ft_memcpy(line, mem->line, len);
-	line[len] = '\0';
-	return (line);
-}
-
-static void	ft_get_remainder_line(t_gnl_mem *mem)
-{
-	size_t	remainder_len;
-
-	if (mem->eof && mem->is_newline == false)
+	if (line->allocated_size != 0 && c == '\0')
+		return (true);
+	if (line->allocated_size == 0 \
+		|| line->len + 1 == line->allocated_size)
 	{
-		mem->len = 0;
-		return ;
+		if (line->allocated_size == 0 && c == '\0')
+			line->allocated_size = 1;
+		else if (line->allocated_size == 0)
+			line->allocated_size = 2;
+		else if (line->allocated_size < 1024)
+			line->allocated_size = line->allocated_size * 2;
+		else
+			line->allocated_size = line->allocated_size + 1024;
+		line->data = ft_reallocf(\
+			line->data, line->len, line->allocated_size);
+		if (line->data == NULL)
+			return (false);
 	}
-	remainder_len = mem->len - mem->newline_offset - 1;
-	ft_memcpy(mem->remainder_line, mem->line + mem->newline_offset + 1, \
-			remainder_len);
-	mem->len = remainder_len;
-	mem->newline_offset = 0;
-	free(mem->line);
-	mem->line = NULL;
+	if (c != '\0')
+		line->data[line->len++] = c;
+	line->data[line->len] = '\0';
+	return (true);
 }

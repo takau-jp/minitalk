@@ -1,27 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   strtod_set_msd_and_lsd.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/24 21:58:34 by stanaka2          #+#    #+#             */
-/*   Updated: 2026/06/01 22:56:57 by stanaka2         ###   ########.fr       */
+/*   Created: 2026/06/14 20:01:50 by stanaka2          #+#    #+#             */
+/*   Updated: 2026/06/14 22:57:49 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#include "../ft_strtod_internal.h"
 
-// libft
-# include "ft_ctype.h"
-# include "ft_lst.h"
-# include "ft_math.h"
-# include "ft_stdio.h"
-# include "ft_stdlib.h"
-# include "ft_string.h"
+void	strtod_set_msd_and_lsd(t_to_double *to_double)
+{
+	size_t	i;
 
-// get_next_line
-char	*get_next_line(int fd);
-
-#endif
+	i = 0;
+	while (i < BUF_SIZE)
+	{
+		if (to_double->fixed_point[i] != 0)
+		{
+			if (to_double->msd == NULL)
+				to_double->msd = &(to_double->fixed_point[i]);
+			to_double->lsd = &(to_double->fixed_point[i]);
+		}
+		++i;
+	}
+}

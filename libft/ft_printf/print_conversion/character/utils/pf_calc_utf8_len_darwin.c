@@ -1,27 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   pf_calc_utf8_len_darwin.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/24 21:58:34 by stanaka2          #+#    #+#             */
-/*   Updated: 2026/06/01 22:56:57 by stanaka2         ###   ########.fr       */
+/*   Created: 2026/04/29 18:40:32 by stanaka2          #+#    #+#             */
+/*   Updated: 2026/06/01 22:52:22 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#include <stddef.h>
+#include <wchar.h>
 
-// libft
-# include "ft_ctype.h"
-# include "ft_lst.h"
-# include "ft_math.h"
-# include "ft_stdio.h"
-# include "ft_stdlib.h"
-# include "ft_string.h"
-
-// get_next_line
-char	*get_next_line(int fd);
-
-#endif
+size_t	pf_calc_utf8_len(wchar_t wc)
+{
+	if (0x0000 <= wc && wc <= 0x007F)
+		return (1);
+	else if (0x0080 <= wc && wc <= 0x07FF)
+		return (2);
+	else if (0x0800 <= wc && wc <= 0xFFFF)
+		return (3);
+	else if (0x10000 <= wc && wc <= 0x10FFFF)
+		return (4);
+	else
+		return (0);
+}

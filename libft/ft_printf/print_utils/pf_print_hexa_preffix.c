@@ -1,27 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   pf_print_hexa_preffix.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/24 21:58:34 by stanaka2          #+#    #+#             */
-/*   Updated: 2026/06/01 22:56:57 by stanaka2         ###   ########.fr       */
+/*   Created: 2026/04/19 22:54:12 by stanaka2          #+#    #+#             */
+/*   Updated: 2026/06/04 01:20:33 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#include "ft_string.h"
+#include "ft_printf/ft_printf.h"
+#include "ft_printf/print_utils.h"
 
-// libft
-# include "ft_ctype.h"
-# include "ft_lst.h"
-# include "ft_math.h"
-# include "ft_stdio.h"
-# include "ft_stdlib.h"
-# include "ft_string.h"
-
-// get_next_line
-char	*get_next_line(int fd);
-
-#endif
+void	pf_print_hexa_preffix(t_ctx *ctx, t_conv *conv)
+{
+	if (ft_strchr("xpa", conv->identifier) != NULL)
+		pf_print_strn(ctx, "0x", 2);
+	else if (ft_strchr("XA", conv->identifier) != NULL)
+		pf_print_strn(ctx, "0X", 2);
+}

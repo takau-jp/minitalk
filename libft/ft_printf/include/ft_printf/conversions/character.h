@@ -1,27 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   character.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/24 21:58:34 by stanaka2          #+#    #+#             */
-/*   Updated: 2026/06/01 22:56:57 by stanaka2         ###   ########.fr       */
+/*   Created: 2026/04/20 01:07:37 by stanaka2          #+#    #+#             */
+/*   Updated: 2026/06/03 21:32:38 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#ifndef CHARACTER_H
+# define CHARACTER_H
 
-// libft
-# include "ft_ctype.h"
-# include "ft_lst.h"
-# include "ft_math.h"
-# include "ft_stdio.h"
-# include "ft_stdlib.h"
-# include "ft_string.h"
+# include <stdarg.h>
 
-// get_next_line
-char	*get_next_line(int fd);
+# include "ft_printf/types.h"
+
+void	pf_conv_c(va_list *ap, t_ctx *ctx, t_conv *conv);
+void	pf_conv_s(va_list *ap, t_ctx *ctx, t_conv *conv);
+void	pf_conv_lc(va_list *ap, t_ctx *ctx, t_conv *conv);
+void	pf_conv_ls(va_list *ap, t_ctx *ctx, t_conv *conv);
 
 #endif

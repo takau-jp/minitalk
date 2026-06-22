@@ -1,27 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   read_conversion_internal.h                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/24 21:58:34 by stanaka2          #+#    #+#             */
-/*   Updated: 2026/06/01 22:56:57 by stanaka2         ###   ########.fr       */
+/*   Created: 2026/06/01 21:20:45 by stanaka2          #+#    #+#             */
+/*   Updated: 2026/06/04 01:36:14 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#ifndef READ_CONVERSION_INTERNAL_H
+# define READ_CONVERSION_INTERNAL_H
 
-// libft
-# include "ft_ctype.h"
-# include "ft_lst.h"
-# include "ft_math.h"
-# include "ft_stdio.h"
-# include "ft_stdlib.h"
-# include "ft_string.h"
+# include <stdbool.h>
 
-// get_next_line
-char	*get_next_line(int fd);
+# define CONV "cspdiuxX%onfFeEgGaA"
+# define FLAGS "-+ #0"
+# define LENGTH "hljztL"
+
+bool	pf_check_int_overflow(const char *format);
+int		pf_precision_atoi(const char *format);
 
 #endif
