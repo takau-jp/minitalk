@@ -6,7 +6,7 @@
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 14:25:15 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/11/20 16:45:17 by stanaka2         ###   ########.fr       */
+/*   Updated: 2026/06/22 21:25:17 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "libft.h"
 # include "utf8_bonus.h"
 # include <signal.h>
+# include <stdlib.h>
 
 # define INITIAL -1
 # define TIME_OUT 3

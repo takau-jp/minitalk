@@ -6,7 +6,7 @@
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 00:31:20 by stanaka2          #+#    #+#             */
-/*   Updated: 2025/11/21 17:21:43 by stanaka2         ###   ########.fr       */
+/*   Updated: 2026/06/22 21:24:16 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 
 # include "libft.h"
 # include <signal.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <limits.h>
 
 # define ACK_RESPONSE -1
 # define ACK_TIME_OUT 3000000 // 3,000,000μs = 3s
