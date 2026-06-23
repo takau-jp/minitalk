@@ -37,7 +37,7 @@ void	pf_decode_binary64(double num, t_pf_float *fp)
 	if (fp->value_type == FLOAT_SUBNORMAL)
 		fp->emax -= 1;
 	if (fp->value_type != FLOAT_ZERO)
-		fp->exponent -= fp->emax;
+		fp->exponent = (int16_t)(fp->exponent - fp->emax);
 	get_int_binary(fp);
 	get_frac_binary(fp);
 }

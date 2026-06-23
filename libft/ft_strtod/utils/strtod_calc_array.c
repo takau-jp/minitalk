@@ -30,14 +30,14 @@ void	strtod_half_array(t_to_double *to_double)
 	carry = 0;
 	while (left <= right)
 	{
-		*left += carry * to_double->base;
+		*left = (uint8_t)(*left + carry * to_double->base);
 		carry = *left % 2;
 		*left = *left / 2;
 		++left;
 	}
 	if (carry != 0 && left <= to_double->end)
 	{
-		*left = (carry * to_double->base) / 2;
+		*left = (uint8_t)((carry * to_double->base) / 2);
 		to_double->lsd = left;
 	}
 	update_msd_and_lsd(to_double);
@@ -56,7 +56,7 @@ void	strtod_double_array(t_to_double *to_double)
 	carry = 0;
 	while (left <= right)
 	{
-		*right = *right * 2 + carry;
+		*right = (uint8_t)(*right * 2 + carry);
 		carry = *right / to_double->base;
 		*right %= to_double->base;
 		--right;

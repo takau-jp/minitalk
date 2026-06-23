@@ -96,14 +96,14 @@ static void	print_fixed_point(
 		i = fp->buf_int_size - 1;
 	while (i < fp->buf_int_size)
 	{
-		pf_print_char(ctx, fp->print_buf[i++] + '0');
+		pf_print_char(ctx, (char)(fp->print_buf[i++] + '0'));
 		conv->precision--;
 	}
 	if (conv->precision > 0 || conv->hash_flag == '#')
 		pf_print_char(ctx, '.');
 	while (conv->precision > 0 && i < fp->buf_size)
 	{
-		pf_print_char(ctx, fp->print_buf[i++] + '0');
+		pf_print_char(ctx, (char)(fp->print_buf[i++] + '0'));
 		conv->precision--;
 	}
 	while (conv->precision > 0 && conv->hash_flag == '#')

@@ -74,12 +74,12 @@ static void	print_exp_notation(
 		i = fp->buf_size - 1;
 	while (i < fp->buf_size - 1 && fp->print_buf[i] == 0)
 		i++;
-	pf_print_char(ctx, fp->print_buf[i++] + '0');
+	pf_print_char(ctx, (char)(fp->print_buf[i++] + '0'));
 	if (conv->precision > 0 || conv->hash_flag == '#')
 		pf_print_char(ctx, '.');
 	while (conv->precision > 0 && i < fp->buf_size)
 	{
-		pf_print_char(ctx, fp->print_buf[i++] + '0');
+		pf_print_char(ctx, (char)(fp->print_buf[i++] + '0'));
 		conv->precision--;
 	}
 	while (conv->precision > 0)

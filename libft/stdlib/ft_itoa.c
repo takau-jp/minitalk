@@ -6,7 +6,7 @@
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 10:41:20 by stanaka2          #+#    #+#             */
-/*   Updated: 2026/06/15 16:11:38 by stanaka2         ###   ########.fr       */
+/*   Updated: 2026/06/23 12:44:24 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ char	*ft_itoa(int n)
 	un = ft_abs_uint(n);
 	while (digit--)
 	{
-		num[digit] = (un % 10) + '0';
+		num[digit] = (char)(un % 10 + '0');
 		if (n < 0 && digit == 1)
 		{
 			num[0] = '-';

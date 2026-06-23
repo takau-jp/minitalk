@@ -82,7 +82,7 @@ static void	print_float_hex(t_ctx *ctx, t_conv *conv, t_pf_float *fp)
 {
 	int	i;
 
-	pf_print_char(ctx, fp->print_buf[0] + '0');
+	pf_print_char(ctx, (char)(fp->print_buf[0] + '0'));
 	if (conv->precision > 0 || conv->hash_flag == '#')
 		pf_print_char(ctx, '.');
 	i = 0;

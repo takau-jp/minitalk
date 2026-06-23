@@ -6,7 +6,7 @@
 /*   By: stanaka2 <stanaka2@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/23 16:31:44 by stanaka2          #+#    #+#             */
-/*   Updated: 2026/06/12 16:44:57 by stanaka2         ###   ########.fr       */
+/*   Updated: 2026/06/23 12:43:31 by stanaka2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ static void	print_float_hex(t_ctx *ctx, t_conv *conv, t_pf_float *fp)
 {
 	int	i;
 
-	pf_print_char(ctx, fp->print_buf[0] + '0');
+	pf_print_char(ctx, (char)(fp->print_buf[0] + '0'));
 	if (conv->precision > 0 || conv->hash_flag == '#')
 		pf_print_char(ctx, '.');
 	i = 0;
